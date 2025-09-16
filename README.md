@@ -31,7 +31,7 @@ You need to have **Go** installed on your server.
 2.  **Build the application**
     This command compiles the source code into a single executable binary named `MyIP`.
     ```bash
-    go build -o MyIP main.go
+    go mod init MyIP && go mod tidy && go build -o MyIP main.go
     ```
 
 3.  **Run the application**
