@@ -4,6 +4,14 @@ A simple, high-performance, and scalable API that returns a client's public IP a
 
 This service correctly identifies the visitor's real IP address, even when behind a reverse proxy or CDN like Cloudflare.
 
+## Live Version
+
+A public and rate-limit-free version of this service is deployed and maintained by **DynX**.
+
+-   **IPv4 & IPv6:** [`https://myip.dynx.pro`](https://myip.dynx.pro)
+-   **IPv4 Only:** [`https://ipv4.myip.dynx.pro`](https://ipv4.myip.dynx.pro)
+-   **IPv6 Only:** [`https://ipv6.myip.dynx.pro`](https://ipv6.myip.dynx.pro)
+
 ## Features
 
 -   ✅ Returns the visitor's public IP address in plain text.
