@@ -48,13 +48,15 @@ func clientIP(c *fiber.Ctx) string {
 
 func main() {
 	app := fiber.New(fiber.Config{
-		Prefork: true,
-		Network: fiber.NetworkTCP6,
+		Prefork:      true,
+		Network:      fiber.NetworkTCP6,
+		AppName:      "MyIP",
+		ServerHeader: "Go-Fiber",
 	})
 	app.Use(logger.New())
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString(clientIP(c))
 	})
 	log.Fatal(app.Listen("[::]:3000"))
-//	log.Fatal(app.ListenTLS("[::]:443", "/fullchain.pem", "/privkey.pem"))
+	//	log.Fatal(app.ListenTLS("[::]:443", "/fullchain.pem", "/privkey.pem"))
 }
