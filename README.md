@@ -15,12 +15,19 @@ A public and rate-limit-free version of this service is deployed and maintained 
 ## Features
 
 -   ✅ Returns the visitor's public IP address in plain text.
--   🚀 Blazing fast and lightweight, thanks to Go and Fiber.
+-   🚀 Blazing fast and lightweight, thanks to Go and Fibe.
 -   ⚙️ Optimized for high-concurrency environments with Fiber's `Prefork` feature.
--   🌐 Listens on both IPv4 and IPv6 (`[::]`).
+-   🌐 Listens on both IPv4 and IPv6.
 -   🔒 Reliably detects the real client IP behind proxies.
 
 ---
+## Performance
+
+![MyIP_wrk](https://github.com/user-attachments/assets/14370449-a1e4-4b89-91d6-70e2779d42c3)
+
+The `MyIP` service demonstrates high-performance capabilities for handling concurrent HTTP requests. As shown in the benchmark above, the application is capable of processing over **60,000 requests per second** with low latency (~21 ms average) under heavy load.
+
+This test was performed from an **8-core server** to a **2-core server** (host: `myip.dynx.pro`) using `wrk` with **8 threads and 1000 concurrent connections** over a **15-second duration**. The results highlight the efficiency of the server in returning simple plaintext responses, making it ideal for low-latency, high-throughput scenarios.
 
 ## Installation & Usage
 
@@ -36,19 +43,25 @@ You need to have **Go** installed on your server.
     cd MyIP
     ```
 
-2.  **Build the application**
+2.  **Edit .env file**
+    This command opens the `.env` configuration file in the nano text editor, allowing you to modify its contents.
+    ```bash
+    nano .env
+    ```
+
+3.  **Build the application**
     This command compiles the source code into a single executable binary named `MyIP`.
     ```bash
     go mod init MyIP && go mod tidy && go build -o MyIP main.go
     ```
 
-3.  **Run the application**
+4.  **Run the application**
     The server will start and listen on port `3000`.
     ```bash
     ./myip
     ```
 
-4.  **Test it**
+5.  **Test it**
     You can now get your IP by making a request to the server.
     IPv4:
     ```bash
@@ -104,49 +117,3 @@ To ensure the application runs continuously in the background, automatically sta
     ```bash
     sudo systemctl status MyIP.service
     ```
-
-    ## Running with HTTPS (SSL/TLS)
-
-To serve the API over a secure HTTPS connection, you'll need SSL/TLS certificates (e.g., from [Let's Encrypt](https://letsencrypt.org/)) and a small modification to the `main.go` file.
-
-### 1. Obtain SSL Certificates
-
-First, make sure you have your certificate files (`fullchain.pem`) and private key files (`privkey.pem`) on your server.
-
-### 2. Modify `main.go`
-
-You need to switch from `app.Listen` to `app.ListenTLS`.
-
--   **Find this line** in your `main.go` file:
-    ```go
-    log.Fatal(app.Listen("[::]:3000"))
-    ```
-
--   **Replace it** with the following, making sure to provide the correct paths to your certificate and private key files. The standard port for HTTPS is `443`.
-
-    ```go
-    log.Fatal(app.ListenTLS("[::]:443", "/path/to/your/fullchain.pem", "/path/to/your/privkey.pem"))
-    ```
-
-    **Example:**
-    Based on the code comments, you would change this:
-    ```go
-    log.Fatal(app.Listen("[::]:3000"))
-    // log.Fatal(app.ListenTLS("[::]:443", "/etc/letsencrypt/live/ipv4.myip.dynx.pro/fullchain.pem", "/etc/letsencrypt/live/ipv4.myip.dynx.pro/privkey.pem"))
-    ```
-    To this:
-    ```go
-    // log.Fatal(app.Listen("[::]:3000"))
-    log.Fatal(app.ListenTLS("[::]:443", "/etc/letsencrypt/live/ipv4.myip.dynx.pro/fullchain.pem", "/etc/letsencrypt/live/ipv4.myip.dynx.pro/privkey.pem"))
-    ```
-
-### 3. Rebuild and Restart
-
-After saving the changes to `main.go`, rebuild your application and restart the service.
-
-```bash
-# Rebuild the binary
-go build -o myip main.go
-
-# If using systemd, restart the service
-sudo systemctl restart myip.service
