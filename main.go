@@ -1,12 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
+	"os"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/joho/godotenv"
 )
 
 func clientIP(c *fiber.Ctx) string {
@@ -47,16 +50,40 @@ func clientIP(c *fiber.Ctx) string {
 }
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using system environment variables.")
+	}
+
 	app := fiber.New(fiber.Config{
 		Prefork:      true,
 		Network:      fiber.NetworkTCP6,
 		AppName:      "MyIP",
 		ServerHeader: "Go-Fiber",
 	})
-	app.Use(logger.New())
+
+	if os.Getenv("LOG") == "true" {
+		app.Use(logger.New())
+	}
+
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString(clientIP(c))
 	})
-	log.Fatal(app.Listen("[::]:3000"))
-	//	log.Fatal(app.ListenTLS("[::]:443", "/fullchain.pem", "/privkey.pem"))
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+	listenAddr := fmt.Sprintf("[::]:%s", port)
+
+	useTLS := os.Getenv("USE_TLS")
+	if useTLS == "true" {
+		certFile := os.Getenv("CERT_FILE")
+		keyFile := os.Getenv("KEY_FILE")
+		if certFile == "" || keyFile == "" {
+			log.Fatal("USE_TLS is true, but CERT_FILE or KEY_FILE is not set.")
+		}
+		log.Fatal(app.ListenTLS(listenAddr, certFile, keyFile))
+	} else {
+		log.Fatal(app.Listen(listenAddr))
+	}
 }
