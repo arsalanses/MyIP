@@ -1,0 +1,17 @@
+services:
+  myip:
+    image: ttl.sh/myip:${TAG:-latest}
+    restart: unless-stopped
+    env_file: ".env"
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.myip.entrypoints=http"
+      - "traefik.http.routers.myip.rule=Host(`myip.example.com`)"
+      - "traefik.http.services.myip.loadbalancer.server.port=3000"
+
+networks:
+  web:
+    external: true
