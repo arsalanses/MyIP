@@ -1,5 +1,7 @@
 FROM golang:1.20-alpine AS builder
 
+LABEL org.opencontainers.image.source=https://github.com/arsalanses/MyIP
+
 WORKDIR /app
 
 COPY go.mod go.sum ./
