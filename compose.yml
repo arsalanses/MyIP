@@ -1,6 +1,6 @@
 services:
   myip:
-    image: ttl.sh/myip:${TAG:-latest}
+    image: ghcr.io/mrdevanony/myip:latest:${TAG:-latest}
     restart: unless-stopped
     env_file: ".env"
     networks:
