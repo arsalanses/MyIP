@@ -1,6 +1,6 @@
 FROM golang:1.20-alpine AS builder
 
-LABEL org.opencontainers.image.source=https://github.com/arsalanses/MyIP
+LABEL org.opencontainers.image.source=https://github.com/arsalanses/myip
 
 WORKDIR /app
 
